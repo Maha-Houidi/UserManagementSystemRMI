@@ -17,13 +17,14 @@ public class UserControlor extends UnicastRemoteObject implements IUser{
 	}
 
 	
-	public void Register(String username, String password, String fullname, int age) throws RemoteException, userException{
+	public String Register(String username, String password, String fullname, int age) throws RemoteException, userException{
 		User u = new User(username,password,fullname,age);
 		if(users.size()<maxUsers) {
 			users.add(u);
+			return "Registred successfully ! ";
 		}else throw( new userException("Sorry! we can not accept more users"));
 	}
-	public void Login(String username, String password) throws RemoteException, userException{
+	public String Login(String username, String password) throws RemoteException, userException{
 		Iterator<User> itr = users.iterator();
 		boolean found=false;
 		while(itr.hasNext()) {
@@ -31,51 +32,61 @@ public class UserControlor extends UnicastRemoteObject implements IUser{
 			if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
 				found=true;
 				user.setStatus("connected");
-				System.out.println("login successful ! ");
-				System.out.println("Welcome "+username+" ! ");
-				break;
 			}
 		}
 		if(found==false){
 			throw(new userException("Incorrect username or password! "));
+		}else {
+			return(new String("login successful ! \n  "));
 		}
 	}
 	
-	public void Logout(String username) throws RemoteException{
+	public String Logout(String username) throws RemoteException{
+		boolean found=false;
 		Iterator<User> itr = users.iterator();
 		while(itr.hasNext()) {
 			User user = itr.next();
 			if(user.getUsername().equals(username)) {
 				user.setStatus("disconnected");
-				System.out.println("logout successful ! ");
-				System.out.println("Goodbye  ! ");
-				break;
+				found=true;
 			}
 		}
+		if(found) {
+			return "logout successful ! ";
+		}else {
+			return "logout not successful";
+		}
 	};
-	public void DeleteUser(String username) throws RemoteException{
+	public String DeleteUser(String username) throws RemoteException{
+		boolean found =false;
 		Iterator<User> itr = users.iterator();
 		while(itr.hasNext()) {
 			if(itr.next().getUsername().equals(username)) {
 				users.remove(itr.next());
-				System.out.println(" user was deleted successfully ! ");
-				break;
+				found=true;
 			}
 		}
+		if(found) {
+			return "user was deleted successfully !  ";
+		}else {
+			return "user with given username does not exist";
+		}
+		
 	};
-	public void ChangePassword(String username,String password) throws RemoteException, userException{
+	public String GetUser(String username) throws RemoteException, userException{
 		Iterator<User> itr = users.iterator();
 		boolean found=false;
 		while(itr.hasNext()) {
 			if(itr.next().getUsername().equals(username)) {
 				found=true;
-				itr.next().setPassword(password);
-				System.out.println("password changed successfully ! ");
-				break;
-			}
+				User user = itr.next();
+				return user.toString(); 
+		}
 		}
 		if(found==false){
-			throw(new userException("Incorrect username! "));
+			throw(new userException(" User with given username does not exist ! "));
+		}else {
+			return "";
 		}
 	};
 	
