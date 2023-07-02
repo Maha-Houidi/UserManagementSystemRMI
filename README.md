@@ -21,7 +21,7 @@ In an RMI application, we write two programs:
  
   * *Interface IUser* : extends Remote and contains the signature of the remote methods and every method should throw a RemoteException.
   * *Class User* : implements serializable and contains the attributes, constructor , getters and setters to define the user.
-  * *Class UserControlor* : extends UnicastRemoteObject and implements the interface IUser, this class contains the  
+  * *Class UserController* : extends UnicastRemoteObject and implements the interface IUser, this class contains the  
 implementation of the different methods that the client can invoke.
   * *Exception userException* : it's a customised exception we use to send a specific message for an error. 
   * *Class RMIServer* : it's the main class for the server side that binds the objects in the registry using rebind().
